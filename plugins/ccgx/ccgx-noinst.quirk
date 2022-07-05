@@ -1,0 +1,8 @@
+# Intel Gatkex Creek Goshen Ridge EVB
+[USB\VID_04B4&PID_5220]
+Plugin = ccgx
+GType = FuCcgxDmcDevice
+ParentGuid = USB\VID_8087&PID_0B40
+CcgxDmcTriggerCode = 1
+InstallDuration = 900
+RemoveDelay = 732000
