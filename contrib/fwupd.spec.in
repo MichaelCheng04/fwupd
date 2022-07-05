@@ -446,6 +446,7 @@ done
 %{_libdir}/fwupd-plugins-%{fwupdplugin_version}/libfu_plugin_genesys.so
 %{_libdir}/fwupd-plugins-%{fwupdplugin_version}/libfu_plugin_gpio.so
 %{_libdir}/fwupd-plugins-%{fwupdplugin_version}/libfu_plugin_hailuck.so
+%{_libdir}/fwupd-plugins-%{fwupdplugin_version}/libfu_plugin_intel_usb4.so
 %{_libdir}/fwupd-plugins-%{fwupdplugin_version}/libfu_plugin_iommu.so
 %{_libdir}/fwupd-plugins-%{fwupdplugin_version}/libfu_plugin_jabra.so
 %if 0%{?have_uefi}
