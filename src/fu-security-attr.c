@@ -204,6 +204,576 @@ fu_security_attr_get_name(FwupdSecurityAttr *attr)
 }
 
 const gchar *
+fu_security_attr_get_title(FwupdSecurityAttr *attr)
+{
+	const gchar *appstream_id = fwupd_security_attr_get_appstream_id(attr);
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SPI_BIOSWE) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SPI_BLE) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SPI_SMM_BWP) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SPI_DESCRIPTOR) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_FWUPD_UPDATES) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_AMD_ROLLBACK_PROTECTION) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_AMD_SPI_REPLAY_PROTECTION) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_AMD_SPI_WRITE_PROTECTION) == 0) {
+		/* TRANSLATORS: Title: this refers to the flash chip in the computer */
+		return _("System Firmware");
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_PREBOOT_DMA_PROTECTION) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_IOMMU) == 0) {
+		/* TRANSLATORS: Title: device as in peripherals  */
+		return _("Device Protection");
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_ENABLED) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_VERIFIED) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_ACM) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_POLICY) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_OTP) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_UEFI_PK) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_UEFI_SECUREBOOT) == 0) {
+		/* TRANSLATORS: Title: the secure boot chain */
+		return _("Secure Boot");
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_CET_ENABLED) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_CET_ACTIVE) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_SMAP) == 0) {
+		/* TRANSLATORS: Title: in this case means the main CPU */
+		return _("Processor Protection");
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_ENCRYPTED_RAM) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_KERNEL_SWAP) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SUSPEND_TO_RAM) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SUSPEND_TO_IDLE) == 0) {
+		/* TRANSLATORS: Title: memory as in system DRAM */
+		return _("Memory Protection");
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_KERNEL_LOCKDOWN) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_KERNEL_TAINTED) == 0) {
+		/* TRANSLATORS: Title: your Linux OS, not the nut */
+		return _("Kernel Protection");
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_TPM_EMPTY_PCR) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_TPM_RECONSTRUCTION_PCR0) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_TPM_VERSION_20) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_FWUPD_ATTESTATION) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_FWUPD_PLUGINS) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SUPPORTED_CPU) == 0) {
+		/* TRANSLATORS: Title: attestation means verifying your system state */
+		return _("System Attestation");
+	}
+
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_MEI_MANUFACTURING_MODE) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_MEI_OVERRIDE_STRAP) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_MEI_VERSION) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_PLATFORM_DEBUG_ENABLED) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_PLATFORM_DEBUG_LOCKED) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_PLATFORM_FUSED) == 0) {
+		/* TRANSLATORS: Title: as in your entire computer */
+		return _("System Protection");
+	}
+	return NULL;
+}
+
+/* one line saying the problem, then one line saying why -- or how to fix the problem */
+gchar *
+fu_security_attr_get_description(FwupdSecurityAttr *attr)
+{
+	const gchar *appstream_id = fwupd_security_attr_get_appstream_id(attr);
+	g_autoptr(GPtrArray) strs = g_ptr_array_new();
+	gboolean contact_hw_vendor = FALSE;
+	gboolean check_bios_settings = FALSE;
+
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SPI_BIOSWE) == 0 &&
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_AMD_SPI_WRITE_PROTECTION) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer success message (unlikely to see) */
+			    _("The system firmware is locked and not writable at runtime."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The system firmware is unlocked and writable by any "
+					  "privileged user."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SPI_BLE) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			/* TRANSLATORS: longer success message (unlikely to see) */
+			g_ptr_array_add(strs, _("The system firmware cannot be easily unlocked."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The system firmware can be unlocked and written by any "
+					  "privileged user."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SPI_SMM_BWP) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			/* TRANSLATORS: longer success message (unlikely to see) */
+			g_ptr_array_add(strs, _("The system firmware cannot be unlocked."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The system firmware could be unlocked and written by "
+					  "any privileged user."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SPI_DESCRIPTOR) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("Critical areas of the system firmware are protected."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("Critical areas of the system firmware could be changed "
+					  "by any privileged user."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_PREBOOT_DMA_PROTECTION) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("System memory is protected from malicious devices "
+					  "before starting the OS."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("System memory is not protected from malicious devices "
+					  "before starting the OS."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_ENABLED) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_VERIFIED) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("System firmware is being verified by the processor at "
+					  "system start."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("System firmware is not being verified by the processor "
+					  "at system start."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_ACM) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("System firmware is being completely verified by the "
+					  "processor at system start."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("System firmware is not being completely verified by the "
+					  "processor at system start."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_POLICY) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("Critical failures of system firmware verification cause "
+					  "system startup to stop."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("Critical failures of system firmware verification can "
+					  "be ignored by the user."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_BOOTGUARD_OTP) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("System firmware verification cannot be disabled."));
+		} else {
+			/* TRANSLATORS: longer failure message */
+			g_ptr_array_add(strs, _("System firmware verification has been disabled."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_CET_ENABLED) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("The processor could detect and ignore more attack "
+					  "attempts from malicious software."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The processor cannot detect and ignore more attack "
+					  "attempts from malicious software."));
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_CET_ACTIVE) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("The processor will detect and ignore targeted attack "
+					  "attempts from malicious software."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The processor will not detect and ignore targeted "
+					  "attack attempts from malicious software."));
+			check_bios_settings = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_INTEL_SMAP) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("The processor can detect and ignore some attacks from "
+					  "malicious software."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The processor cannot detect and ignore some attacks "
+					  "from malicious software."));
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_ENCRYPTED_RAM) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("Memory is being encrypted and the contents cannot be "
+					  "recovered if removed by an attacker."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("Memory is not encrypted and the contents may be "
+					  "recovered if removed by an attacker."));
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_IOMMU) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer success message (unlikely to see) */
+			    _("Malicious peripherals cannot write to main system memory."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("Some malicious peripherals could potentially write to "
+					  "main system memory."));
+			check_bios_settings = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_KERNEL_LOCKDOWN) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("Your operating system is protected against malicious "
+					  "software writing directly to the hardware."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("Your operating system is not protected against "
+					  "malicious software writing directly to the hardware."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_KERNEL_TAINTED) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			/* TRANSLATORS: longer success message */
+			g_ptr_array_add(strs,
+					_("There is no software has been added to your operating "
+					  "system that would affect platform security."));
+		} else {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer failure message */
+			    _("Unverified software has been added to your operating system."));
+			g_ptr_array_add(
+			    strs,
+			    _("This can be the result of adding unsigned drivers, and means that "
+			      "some security features may no longer function."));
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_KERNEL_SWAP) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("Temporary files saved to disk are encrypted and cannot "
+					  "be read by an attacker."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("Temporary files saved to disk are not encrypted and "
+					  "could be read by an attacker."));
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SUSPEND_TO_RAM) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SUSPEND_TO_IDLE) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("The system sleep mode is set correctly so that files "
+					  "are not readable."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The system sleep mode could allow an attacker to remove "
+					  "system memory and read the content."));
+			check_bios_settings = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_UEFI_PK) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("Your system startup is being verified correctly."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The key used for secure system startup is not valid."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_UEFI_SECUREBOOT) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			/* TRANSLATORS: longer success message */
+			g_ptr_array_add(
+			    strs,
+			    _("Your system startup is being protected by Secure Boot."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("System startup is not being protected by Secure Boot "
+					  "which would allow an attacker to install software run "
+					  "before your operating system starts."));
+			check_bios_settings = TRUE;
+		}
+	}
+
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_TPM_EMPTY_PCR) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			/* TRANSLATORS: longer success message (unlikely to see) */
+			g_ptr_array_add(strs, _("System attestation values have been set."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("System attestation values have not been set and "
+					  "firmware protection may be incomplete."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_TPM_RECONSTRUCTION_PCR0) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer success message (unlikely to see) */
+			    _("System firmware and startup measurements have been verified."));
+		} else {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer failure message */
+			    _("System firmware and startup measurements could not be verified and "
+			      "so firmware protection may be incomplete."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_TPM_VERSION_20) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("System firmware and startup measurements are being "
+					  "collected for verification."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("System firmware and startup measurements cannot be "
+					  "being collected for verification."));
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_MEI_MANUFACTURING_MODE) == 0 ||
+	    g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_PLATFORM_FUSED) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("The system has been correctly configured when assembed "
+					  "by the vendor and firmware is being protected."));
+		} else {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer failure message */
+			    _("The system has not been correctly configured when assembed by the "
+			      "vendor, which may allow an attacker to replace system firmware."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_MEI_OVERRIDE_STRAP) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer success message (unlikely to see) */
+			    _("The mainboard has not disabled system firmware protection."));
+		} else {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer failure message */
+			    _("The mainboard has disabled system firmware protection which may "
+			      "allow an attacker to replace system firmware."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_MEI_VERSION) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer success message (unlikely to see) */
+			    _("The management processor is not critically out-of-date."));
+		} else {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer failure message */
+			    _("The management processor is critically out-of-date and it may be "
+			      "possible for a remote attacker to modify the system firmware even "
+			      "when the computer is powered off."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_FWUPD_UPDATES) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer success message (unlikely to see) */
+			    _("System firmware updates are available for this system."));
+		} else {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer failure message */
+			    _("System firmware updates are not available for this system."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_FWUPD_ATTESTATION) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("System firmware verification measurements have been "
+					  "provided by the vendor for this system."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("System firmware verification measurements have not been "
+					  "provided by the vendor for this system."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_FWUPD_PLUGINS) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer success message (unlikely to see) */
+			    _("The fwupd software is set up correctly and all plugins are valid."));
+		} else {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer failure message */
+			    _("The fwupd software has not been set up correctly or some "
+			      "plugins are invalid."));
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_PLATFORM_DEBUG_ENABLED) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			/* TRANSLATORS: longer success message (unlikely to see) */
+			g_ptr_array_add(strs, _("Low-level hardware debugging is not enabled."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("Low-level hardware debugging has been enabled for this "
+					  "system and the firmware and OS are not secure."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_PLATFORM_DEBUG_LOCKED) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer success message (unlikely to see) */
+			    _("Low-level hardware debugging has been locked to prevent misuse."));
+		} else {
+			g_ptr_array_add(
+			    strs,
+			    /* TRANSLATORS: longer failure message */
+			    _("Low-level hardware debugging can been enabled for this system and "
+			      "if enabled, the firmware and OS would not be secure."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_SUPPORTED_CPU) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("This system can be tested for firmware security."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("This system cannot be tested for firmware security as "
+					  "it does not have a supported processor or mainboard."));
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_AMD_ROLLBACK_PROTECTION) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("The system firmware cannot be downgraded to an older "
+					  "legitimate version with potential security problems."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The system firmware can be downgraded to an older "
+					  "legitimate version with potential security problems."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+	if (g_strcmp0(appstream_id, FWUPD_SECURITY_ATTR_ID_AMD_SPI_REPLAY_PROTECTION) == 0) {
+		if (fwupd_security_attr_has_flag(attr, FWUPD_SECURITY_ATTR_FLAG_SUCCESS)) {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer success message (unlikely to see) */
+					_("The system firmware cannot be tricked into repeating "
+					  "privileged actions by a malicious user."));
+		} else {
+			g_ptr_array_add(strs,
+					/* TRANSLATORS: longer failure message */
+					_("The system firmware could be tricked into repeating "
+					  "privileged actions by a malicious user."));
+			contact_hw_vendor = TRUE;
+		}
+	}
+
+	/* any postfix */
+	if (contact_hw_vendor) {
+		g_ptr_array_add(strs,
+				/* TRANSLATORS: do not translate $HostVendor$ */
+				_("Ensure you have installed all available firmware updates and if "
+				  "still not fixed then contact $HostVendor$."));
+	}
+	if (check_bios_settings) {
+		g_ptr_array_add(
+		    strs,
+		    /* TRANSLATORS: it's frustrating we can't give better instructions */
+		    _("There may be a setting to control this in your system firmware "
+		      "setup, which can be reached before your OS has booted."));
+	}
+
+	/* convert to a single line */
+	g_ptr_array_add(strs, NULL);
+	return g_strjoinv(" ", (gchar **)strs->pdata);
+}
+
+const gchar *
 fu_security_attr_result_to_string(FwupdSecurityAttrResult result)
 {
 	if (result == FWUPD_SECURITY_ATTR_RESULT_VALID) {

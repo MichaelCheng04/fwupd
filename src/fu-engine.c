@@ -6236,6 +6236,12 @@ fu_engine_ensure_security_attrs(FuEngine *self)
 			}
 			fwupd_security_attr_set_name(attr, name_tmp);
 		}
+		if (fwupd_security_attr_get_title(attr) == NULL)
+			fwupd_security_attr_set_title(attr, fu_security_attr_get_title(attr));
+		if (fwupd_security_attr_get_description(attr) == NULL) {
+			g_autofree gchar *tmp = fu_security_attr_get_description(attr);
+			fwupd_security_attr_set_description(attr, tmp);
+		}
 	}
 
 	/* set the obsoletes flag for each attr */
