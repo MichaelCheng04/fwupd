@@ -1093,3 +1093,7 @@ msgstr "[SOMME DE CONTRÔLE]"
 #. TRANSLATORS: Title: if the fwupd plugins are all present and correct
 msgid "fwupd plugins"
 msgstr "Greffons fwupd"
+
+#. DO NOT MERGE THIS
+msgid "This system can be tested for firmware security."
+msgstr "Ce système peut être testé pour la sécurité du firmware."
